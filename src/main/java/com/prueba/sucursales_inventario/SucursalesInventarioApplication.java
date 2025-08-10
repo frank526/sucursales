@@ -16,6 +16,7 @@ import com.prueba.sucursales_inventario.application.servicio.sucursal.SucursalSe
 import com.prueba.sucursales_inventario.domain.port.out.franquicia.LoadFranquicia;
 import com.prueba.sucursales_inventario.domain.port.out.franquicia.SaveFranquicia;
 import com.prueba.sucursales_inventario.domain.port.out.producto.DeleteProducto;
+import com.prueba.sucursales_inventario.domain.port.out.producto.LoadProducto;
 import com.prueba.sucursales_inventario.domain.port.out.producto.SaveProducto;
 import com.prueba.sucursales_inventario.domain.port.out.producto.UpdateProductoStock;
 import com.prueba.sucursales_inventario.domain.port.out.sucursal.LoadSucursal;
@@ -48,8 +49,8 @@ public class SucursalesInventarioApplication {
 
 
 	@Bean
-	public ProductoServicio productoServicio(SaveProducto save, LoadSucursal loadSucursal, DeleteProducto deleteProducto, UpdateProductoStock updateProductoStock){
-		return new ProductoServicio(save, loadSucursal, deleteProducto, updateProductoStock);
+	public ProductoServicio productoServicio(SaveProducto save, LoadSucursal loadSucursal, DeleteProducto deleteProducto, UpdateProductoStock updateProductoStock, LoadProducto loadProducto){
+		return new ProductoServicio(save, loadSucursal, deleteProducto, updateProductoStock, loadProducto);
 	}
 
 	@Bean

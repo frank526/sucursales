@@ -1,33 +1,39 @@
 package com.prueba.sucursales_inventario.application.servicio.producto;
 
+import java.util.List;
 import java.util.Objects;
 
 import com.prueba.sucursales_inventario.domain.exception.EntityNotFoundException;
 import com.prueba.sucursales_inventario.domain.modelo.Producto;
+import com.prueba.sucursales_inventario.domain.modelo.ProductoStockSucursal;
 import com.prueba.sucursales_inventario.domain.modelo.Sucursal;
 import com.prueba.sucursales_inventario.domain.port.in.producto.ActualizarStockUseCase;
+import com.prueba.sucursales_inventario.domain.port.in.producto.ConsultaProductoStockUseCase;
 import com.prueba.sucursales_inventario.domain.port.in.producto.CrearProductoUseCase;
 import com.prueba.sucursales_inventario.domain.port.in.producto.EliminarProductoUseCase;
 import com.prueba.sucursales_inventario.domain.port.out.producto.DeleteProducto;
+import com.prueba.sucursales_inventario.domain.port.out.producto.LoadProducto;
 import com.prueba.sucursales_inventario.domain.port.out.producto.SaveProducto;
 import com.prueba.sucursales_inventario.domain.port.out.producto.UpdateProductoStock;
 import com.prueba.sucursales_inventario.domain.port.out.sucursal.LoadSucursal;
 
-public class ProductoServicio implements CrearProductoUseCase, EliminarProductoUseCase, ActualizarStockUseCase {
+public class ProductoServicio implements CrearProductoUseCase, EliminarProductoUseCase, ActualizarStockUseCase, ConsultaProductoStockUseCase {
 
 
     private final SaveProducto saveProducto;
     private final LoadSucursal loadSucursal;
     private final DeleteProducto deleteProducto;
     private final UpdateProductoStock updateStock;
+    private final LoadProducto loadProducto;
 
     
 
-    public ProductoServicio(SaveProducto saveProducto, LoadSucursal loadSucursal, DeleteProducto deleteProducto, UpdateProductoStock updateStock) {
+    public ProductoServicio(SaveProducto saveProducto, LoadSucursal loadSucursal, DeleteProducto deleteProducto, UpdateProductoStock updateStock, LoadProducto loadProducto) {
         this.saveProducto = saveProducto;
         this.loadSucursal = loadSucursal;
         this.deleteProducto = deleteProducto;
         this.updateStock = updateStock;
+        this.loadProducto = loadProducto;
     }
 
 
@@ -59,6 +65,18 @@ public class ProductoServicio implements CrearProductoUseCase, EliminarProductoU
     @Override
     public void actualizarStock(Producto producto) {
       updateStock.updateStock(producto);
+
+    }
+
+
+
+    @Override
+    public List<ProductoStockSucursal> obtenerStockPorSucursal(Long franquiciaId) {
+
+       List<ProductoStockSucursal> res = loadProducto.getMaxStock(franquiciaId);
+
+       return res;
+       
 
     }
     

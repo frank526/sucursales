@@ -1,9 +1,12 @@
 package com.prueba.sucursales_inventario.adapter.in.web;
 
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -16,6 +19,7 @@ import com.prueba.sucursales_inventario.adapter.out.persistence.sucursal.Sucursa
 import com.prueba.sucursales_inventario.application.servicio.producto.ProductoServicio;
 import com.prueba.sucursales_inventario.domain.exception.EntityNotFoundException;
 import com.prueba.sucursales_inventario.domain.modelo.Producto;
+import com.prueba.sucursales_inventario.domain.modelo.ProductoStockSucursal;
 import com.prueba.sucursales_inventario.domain.modelo.Sucursal;
 
 @RestController
@@ -51,12 +55,17 @@ public class ProductoController {
     public String actualizarProducto(@RequestBody ProductoDTO productoDto){
 
         Producto producto = new Producto(productoDto.getId(), productoDto.getStock());
-
         productoServicio.actualizarStock(producto);
-
         return "actualizado";
 
     }
+
+    @GetMapping
+    public List<ProductoStockSucursal> obtenerMayorStock(@RequestParam Long franquiciaId){
+
+       return productoServicio.obtenerStockPorSucursal(franquiciaId);
+        
+    } 
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> handleNotFound(EntityNotFoundException ex) {

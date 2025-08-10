@@ -1,15 +1,19 @@
 package com.prueba.sucursales_inventario.adapter.out.persistence.producto;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import com.prueba.sucursales_inventario.adapter.out.persistence.sucursal.SucursalEntity;
 import com.prueba.sucursales_inventario.domain.modelo.Producto;
+import com.prueba.sucursales_inventario.domain.modelo.ProductoStockSucursal;
 import com.prueba.sucursales_inventario.domain.modelo.Sucursal;
 import com.prueba.sucursales_inventario.domain.port.out.producto.DeleteProducto;
+import com.prueba.sucursales_inventario.domain.port.out.producto.LoadProducto;
 import com.prueba.sucursales_inventario.domain.port.out.producto.SaveProducto;
 import com.prueba.sucursales_inventario.domain.port.out.producto.UpdateProductoStock;
 
-public class ProductoPersistenceAdapter implements SaveProducto, DeleteProducto, UpdateProductoStock {
+public class ProductoPersistenceAdapter implements SaveProducto, DeleteProducto, UpdateProductoStock, LoadProducto {
 
     private final ProductoRepository productoRepository;
 
@@ -81,6 +85,24 @@ public class ProductoPersistenceAdapter implements SaveProducto, DeleteProducto,
             System.out.println("ERROR TO UPDATE  "+e);
         }
         
+    }
+
+
+
+    @Override
+    public List<ProductoStockSucursal> getMaxStock(Long franquiciaId) {
+    
+        List<ProductoEntity> resultados = productoRepository.getMaxStockBySucursal(franquiciaId);
+
+        List<ProductoStockSucursal> prodList = resultados.stream().map(
+                p -> new ProductoStockSucursal(p.getId(),
+                        p.getNombre(),
+                        p.getSucursal().getId(),
+                        p.getSucursal().getNombre(),
+                        p.getStock()))
+                .collect(Collectors.toList());
+
+            return prodList;
     }
 
 
