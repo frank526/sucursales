@@ -2,8 +2,10 @@ package com.prueba.sucursales_inventario.adapter.in.web;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -28,12 +30,31 @@ public class ProductoController {
     }
 
     @PostMapping
-    public Producto crearSucursal(@RequestParam Long sucursalId, @RequestBody ProductoDTO productoDto) {
+    public Producto crearProducto(@RequestParam Long sucursalId, @RequestBody ProductoDTO productoDto) {
 
       String productoName = productoDto.getNombre();
       Integer stock = productoDto.getStock();
 
       return productoServicio.crearProducto(sucursalId, productoName, stock);
+
+    }
+
+    @DeleteMapping
+    public String eliminarProducto(@RequestParam Long sucursalId, @RequestParam Long productId){
+
+        productoServicio.eliminarProducto(sucursalId, productId);
+        return "eliminado";
+        
+    }
+
+    @PutMapping
+    public String actualizarProducto(@RequestBody ProductoDTO productoDto){
+
+        Producto producto = new Producto(productoDto.getId(), productoDto.getStock());
+
+        productoServicio.actualizarStock(producto);
+
+        return "actualizado";
 
     }
 

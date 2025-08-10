@@ -2,8 +2,8 @@ package com.prueba.sucursales_inventario.domain.port.in.producto;
 
 import com.prueba.sucursales_inventario.domain.modelo.Producto;
 
-public interface CrearProductoUseCase {
+public interface ActualizarStockUseCase {
 
-    Producto crearProducto(Long sucursalId, String nombre, Integer stock);
-
+    void actualizarStock(Producto producto);
+    
 }

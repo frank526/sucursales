@@ -7,5 +7,6 @@ public class ProductoDTO {
 
     private String nombre;
     private Integer stock;
+    private Long id;
 
 }

@@ -1,15 +1,18 @@
 package com.prueba.sucursales_inventario.adapter.out.persistence.producto;
 
+import java.util.Optional;
+
 import com.prueba.sucursales_inventario.adapter.out.persistence.sucursal.SucursalEntity;
 import com.prueba.sucursales_inventario.domain.modelo.Producto;
 import com.prueba.sucursales_inventario.domain.modelo.Sucursal;
+import com.prueba.sucursales_inventario.domain.port.out.producto.DeleteProducto;
 import com.prueba.sucursales_inventario.domain.port.out.producto.SaveProducto;
+import com.prueba.sucursales_inventario.domain.port.out.producto.UpdateProductoStock;
 
-public class ProductoPersistenceAdapter implements SaveProducto {
+public class ProductoPersistenceAdapter implements SaveProducto, DeleteProducto, UpdateProductoStock {
 
     private final ProductoRepository productoRepository;
 
-    
 
     public ProductoPersistenceAdapter(ProductoRepository productoRepository) {
         this.productoRepository = productoRepository;
@@ -29,7 +32,6 @@ public class ProductoPersistenceAdapter implements SaveProducto {
         sucursalEntity.setNombre(sucursal.getNombre());
         productoEntity.setSucursal(sucursalEntity);
         productoEntity.setStock(producto.getStock());
-
         ProductoEntity productoSaved=null;
 
         try{
@@ -39,13 +41,49 @@ public class ProductoPersistenceAdapter implements SaveProducto {
         }catch(Exception e){
 
         }
-
-        
-
         Producto productoModel = new Producto(productoSaved.getNombre(), productoSaved.getStock());
-
         return productoModel;
 
     }
+
+
+    @Override
+    public void delete(Long sucursalId, Long productoId) {
+
+        try{
+            productoRepository.deleteByProductIdAndSucursalId(productoId, sucursalId);
+
+        }catch(Exception e){
+            System.out.println("Error delete producto "+e);
+        }
+
+    }
+
+
+
+    @Override
+    public void updateStock(Producto producto) {
+
+       Optional<ProductoEntity> productoFound = productoRepository.findById(producto.getId());
+
+       if(productoFound.isPresent()){
+        
+       }
+
+       ProductoEntity productoEntity = productoFound.get();
+
+       productoEntity.setStock(producto.getStock());
+
+
+        try{
+            productoRepository.save(productoEntity);
+        }catch(Exception e){
+            System.out.println("ERROR TO UPDATE  "+e);
+        }
+        
+    }
+
+
+
     
 }

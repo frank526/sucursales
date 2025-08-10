@@ -2,6 +2,9 @@ package com.prueba.sucursales_inventario.domain.modelo;
 
 public class Producto {
 
+    
+    private Long id;
+
     private String nombre;
 
     private Integer stock;
@@ -11,6 +14,24 @@ public class Producto {
         this.nombre = nombre;
         this.stock = stock;
     }
+
+    
+
+    public Producto(Long id, Integer stock) {
+        this.id = id;
+        this.stock = stock;
+    }
+
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
 
     public String getNombre() {
         return nombre;
