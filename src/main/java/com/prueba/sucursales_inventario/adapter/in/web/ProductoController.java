@@ -1,6 +1,8 @@
 package com.prueba.sucursales_inventario.adapter.in.web;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import com.prueba.sucursales_inventario.adapter.out.persistence.producto.Product
 import com.prueba.sucursales_inventario.adapter.out.persistence.sucursal.SucursalDto;
 import com.prueba.sucursales_inventario.application.servicio.producto.ProductoServicio;
 import com.prueba.sucursales_inventario.domain.exception.EntityNotFoundException;
+import com.prueba.sucursales_inventario.domain.exception.PersistenceOperationException;
 import com.prueba.sucursales_inventario.domain.modelo.Producto;
 import com.prueba.sucursales_inventario.domain.modelo.ProductoStockSucursal;
 import com.prueba.sucursales_inventario.domain.modelo.Sucursal;
@@ -33,30 +36,38 @@ public class ProductoController {
         this.productoServicio = productoServicio;
     }
 
-    @PostMapping
-    public Producto crearProducto(@RequestParam Long sucursalId, @RequestBody ProductoDTO productoDto) {
+    @PostMapping("/create")
+    public ResponseEntity<?> crearProducto(@RequestParam Long sucursalId, @RequestBody ProductoDTO productoDto) {
 
       String productoName = productoDto.getNombre();
       Integer stock = productoDto.getStock();
 
-      return productoServicio.crearProducto(sucursalId, productoName, stock);
+      Producto productpoNew = productoServicio.crearProducto(sucursalId, productoName, stock);
+
+       return ResponseEntity.status(HttpStatus.CREATED).body(productpoNew);
 
     }
 
-    @DeleteMapping
-    public String eliminarProducto(@RequestParam Long sucursalId, @RequestParam Long productId){
-
+    @DeleteMapping("/delete")
+    public  ResponseEntity<?> eliminarProducto(@RequestParam Long sucursalId, @RequestParam Long productId){
         productoServicio.eliminarProducto(sucursalId, productId);
-        return "eliminado";
-        
+
+        Map<String, String> response = new HashMap<>();
+        response.put("mensaje", "El producto fue eliminado");
+
+        return ResponseEntity.ok(response);
     }
 
-    @PutMapping
-    public String actualizarProducto(@RequestBody ProductoDTO productoDto){
+    @PutMapping("/update")
+    public ResponseEntity<?>  actualizarProducto(@RequestBody ProductoDTO productoDto){
 
         Producto producto = new Producto(productoDto.getId(), productoDto.getStock());
         productoServicio.actualizarStock(producto);
-        return "actualizado";
+
+        Map<String, String> response = new HashMap<>();
+        response.put("mensaje", "El stock del producto fue actualizado");
+
+        return ResponseEntity.ok(response);
 
     }
 
@@ -70,6 +81,11 @@ public class ProductoController {
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> handleNotFound(EntityNotFoundException ex) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(PersistenceOperationException.class)
+    public ResponseEntity<String> handleDBError(PersistenceOperationException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
     }
 
     

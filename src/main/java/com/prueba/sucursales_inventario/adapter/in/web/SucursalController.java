@@ -15,6 +15,7 @@ import com.prueba.sucursales_inventario.adapter.out.persistence.sucursal.Sucursa
 import com.prueba.sucursales_inventario.application.servicio.franquicia.FranquiciaServicio;
 import com.prueba.sucursales_inventario.application.servicio.sucursal.SucursalServicio;
 import com.prueba.sucursales_inventario.domain.exception.EntityNotFoundException;
+import com.prueba.sucursales_inventario.domain.exception.PersistenceOperationException;
 import com.prueba.sucursales_inventario.domain.modelo.Franquicia;
 import com.prueba.sucursales_inventario.domain.modelo.Sucursal;
 
@@ -29,13 +30,15 @@ public class SucursalController {
         this.sucursalServicio = sucursalServicio;
     }
 
-    @PostMapping
-    public Sucursal crearSucursal(@RequestParam Long franquiciaId, @RequestBody SucursalDto sucursalDto) {
+    @PostMapping("/create")
+    public ResponseEntity<?> crearSucursal(@RequestParam Long franquiciaId, @RequestBody SucursalDto sucursalDto) {
 
+        String sucursalName = sucursalDto.getNombre();
 
-      String sucursalName = sucursalDto.getNombre();
+        Sucursal sucursalNew = sucursalServicio.crearSucursal(franquiciaId, sucursalName);
 
-      return sucursalServicio.crearSucursal(franquiciaId, sucursalName);
+        return ResponseEntity.status(HttpStatus.CREATED).body(sucursalNew);
+
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
@@ -43,4 +46,8 @@ public class SucursalController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }
     
+    @ExceptionHandler(PersistenceOperationException.class)
+    public ResponseEntity<String> handleDBError(PersistenceOperationException ex) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(ex.getMessage());
+    }
 }

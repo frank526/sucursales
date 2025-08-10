@@ -3,6 +3,8 @@ package com.prueba.sucursales_inventario.application.servicio.producto;
 import java.util.List;
 import java.util.Objects;
 
+import com.prueba.sucursales_inventario.adapter.out.persistence.producto.ProductoDTO;
+import com.prueba.sucursales_inventario.adapter.out.persistence.producto.ProductoEntity;
 import com.prueba.sucursales_inventario.domain.exception.EntityNotFoundException;
 import com.prueba.sucursales_inventario.domain.modelo.Producto;
 import com.prueba.sucursales_inventario.domain.modelo.ProductoStockSucursal;
@@ -16,6 +18,8 @@ import com.prueba.sucursales_inventario.domain.port.out.producto.LoadProducto;
 import com.prueba.sucursales_inventario.domain.port.out.producto.SaveProducto;
 import com.prueba.sucursales_inventario.domain.port.out.producto.UpdateProductoStock;
 import com.prueba.sucursales_inventario.domain.port.out.sucursal.LoadSucursal;
+
+import jakarta.persistence.PersistenceException;
 
 public class ProductoServicio implements CrearProductoUseCase, EliminarProductoUseCase, ActualizarStockUseCase, ConsultaProductoStockUseCase {
 
@@ -47,7 +51,13 @@ public class ProductoServicio implements CrearProductoUseCase, EliminarProductoU
         if(Objects.isNull(sucursalFound)){
             throw new EntityNotFoundException("Sucursal con id " + sucursalId + " no existe");
         }
-        return saveProducto.save(sucursalFound, producto);
+
+        try{
+            return saveProducto.save(sucursalFound, producto);
+        }catch(Exception e){
+            throw new PersistenceException("Error al guardar el producto "+e.getCause());
+        }
+        
        
     }
 
@@ -55,16 +65,33 @@ public class ProductoServicio implements CrearProductoUseCase, EliminarProductoU
 
     @Override
     public void eliminarProducto(Long sucursalId, Long productoId) {
+        int registrosEliminados =0;
+        try{
+           registrosEliminados= deleteProducto.delete(sucursalId, productoId);
+        }catch(Exception e){
+            throw new PersistenceException("Error al eliminar el producto "+e.getCause());
+        }
 
-        deleteProducto.delete(sucursalId, productoId);
+        if(registrosEliminados==0){
+            throw new EntityNotFoundException("No se encontro ningun producto");
+        }
 
     }
 
 
 
     @Override
-    public void actualizarStock(Producto producto) {
-      updateStock.updateStock(producto);
+    public Producto actualizarStock(Producto producto) {
+        ProductoEntity productoUpdated = null;
+
+        try {
+             productoUpdated = updateStock.updateStock(producto);
+
+        } catch (Exception e) {
+             throw new PersistenceException("Error al actualizar el producto "+e.getMessage());
+        }
+
+        return new Producto(productoUpdated.getId(), productoUpdated.getNombre(), productoUpdated.getStock());
 
     }
 

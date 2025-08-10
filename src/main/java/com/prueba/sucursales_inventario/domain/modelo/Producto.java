@@ -10,6 +10,14 @@ public class Producto {
     private Integer stock;
 
 
+    public Producto(Long id, String nombre, Integer stock) {
+        this.id = id;
+        this.nombre = nombre;
+        this.stock = stock;
+    }
+
+
+
     public Producto(String nombre, Integer stock) {
         this.nombre = nombre;
         this.stock = stock;

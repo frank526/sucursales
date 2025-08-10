@@ -30,7 +30,7 @@ public class FranquiciaPersistenceAdapter implements SaveFranquicia, LoadFranqui
 
         FranquiciaEntity franquiciaSaved = franquiciaRepository.save(franquiciaEntity);
 
-        Franquicia franquiciaModel = new Franquicia(franquiciaSaved.getNombre());
+        Franquicia franquiciaModel = new Franquicia(franquiciaSaved.getId(), franquiciaSaved.getNombre());
 
         return franquiciaModel;
     }

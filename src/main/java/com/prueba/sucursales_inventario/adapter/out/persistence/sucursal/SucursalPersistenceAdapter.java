@@ -43,7 +43,7 @@ public class SucursalPersistenceAdapter implements SaveSucursal, LoadSucursal {
 
         SucursalEntity sucursalSaved = sucursalRepository.save(sucursalEntity);
 
-        Sucursal sucursalModel = new Sucursal(sucursalSaved.getNombre());
+        Sucursal sucursalModel = new Sucursal(sucursalSaved.getId(), sucursalSaved.getNombre());
 
         return sucursalModel;
     }

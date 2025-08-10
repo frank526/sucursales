@@ -5,8 +5,17 @@ import lombok.Data;
 @Data
 public class ProductoDTO {
 
+    private Long id;
     private String nombre;
     private Integer stock;
-    private Long id;
+    
+
+    public ProductoDTO(Long id, String nombre, Integer stock){
+        this.nombre = nombre;
+        this.stock = stock;
+        this.id = id;
+    }
+
+    
 
 }

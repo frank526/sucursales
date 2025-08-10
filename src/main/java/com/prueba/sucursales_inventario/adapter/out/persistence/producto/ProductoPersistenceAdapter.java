@@ -4,7 +4,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import com.prueba.sucursales_inventario.adapter.out.persistence.franquicia.FranquiciaEntity;
 import com.prueba.sucursales_inventario.adapter.out.persistence.sucursal.SucursalEntity;
+import com.prueba.sucursales_inventario.domain.modelo.Franquicia;
 import com.prueba.sucursales_inventario.domain.modelo.Producto;
 import com.prueba.sucursales_inventario.domain.modelo.ProductoStockSucursal;
 import com.prueba.sucursales_inventario.domain.modelo.Sucursal;
@@ -12,6 +14,8 @@ import com.prueba.sucursales_inventario.domain.port.out.producto.DeleteProducto;
 import com.prueba.sucursales_inventario.domain.port.out.producto.LoadProducto;
 import com.prueba.sucursales_inventario.domain.port.out.producto.SaveProducto;
 import com.prueba.sucursales_inventario.domain.port.out.producto.UpdateProductoStock;
+
+import jakarta.persistence.PersistenceException;
 
 public class ProductoPersistenceAdapter implements SaveProducto, DeleteProducto, UpdateProductoStock, LoadProducto {
 
@@ -36,15 +40,9 @@ public class ProductoPersistenceAdapter implements SaveProducto, DeleteProducto,
         sucursalEntity.setNombre(sucursal.getNombre());
         productoEntity.setSucursal(sucursalEntity);
         productoEntity.setStock(producto.getStock());
-        ProductoEntity productoSaved=null;
 
-        try{
+        ProductoEntity productoSaved = productoRepository.save(productoEntity);
 
-             productoSaved = productoRepository.save(productoEntity);
-
-        }catch(Exception e){
-
-        }
         Producto productoModel = new Producto(productoSaved.getNombre(), productoSaved.getStock());
         return productoModel;
 
@@ -52,39 +50,29 @@ public class ProductoPersistenceAdapter implements SaveProducto, DeleteProducto,
 
 
     @Override
-    public void delete(Long sucursalId, Long productoId) {
-
-        try{
-            productoRepository.deleteByProductIdAndSucursalId(productoId, sucursalId);
-
-        }catch(Exception e){
-            System.out.println("Error delete producto "+e);
-        }
+    public int delete(Long sucursalId, Long productoId) {
+        return productoRepository.deleteByProductIdAndSucursalId(productoId, sucursalId);
 
     }
 
-
-
     @Override
-    public void updateStock(Producto producto) {
+    public ProductoEntity updateStock(Producto producto) {
 
-       Optional<ProductoEntity> productoFound = productoRepository.findById(producto.getId());
+        Optional<ProductoEntity> productoFound = productoRepository.findById(producto.getId());
 
-       if(productoFound.isPresent()){
-        
-       }
+        if (productoFound.isPresent()) {
 
-       ProductoEntity productoEntity = productoFound.get();
-
-       productoEntity.setStock(producto.getStock());
-
-
-        try{
-            productoRepository.save(productoEntity);
-        }catch(Exception e){
-            System.out.println("ERROR TO UPDATE  "+e);
         }
-        
+
+        ProductoEntity productoEntity = productoFound.get();
+        productoEntity.setStock(producto.getStock());
+
+        try {
+           return productoRepository.save(productoEntity);
+        } catch (Exception e) {
+            System.out.println("ERROR TO UPDATE  " + e);
+            return null;
+        }
     }
 
 
@@ -103,6 +91,19 @@ public class ProductoPersistenceAdapter implements SaveProducto, DeleteProducto,
                 .collect(Collectors.toList());
 
             return prodList;
+    }
+
+    @Override
+    public Producto getProductoByid(Long productoId) {
+
+        Optional<ProductoEntity> res = productoRepository.findById(productoId);
+
+        if (!res.isPresent()) {
+            return null;
+        }
+
+        Producto producto = res.map(e -> new Producto(e.getId(), e.getNombre(), e.getStock())).orElseThrow();
+        return producto;
     }
 
 

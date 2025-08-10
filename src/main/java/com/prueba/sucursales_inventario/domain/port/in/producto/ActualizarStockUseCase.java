@@ -4,6 +4,6 @@ import com.prueba.sucursales_inventario.domain.modelo.Producto;
 
 public interface ActualizarStockUseCase {
 
-    void actualizarStock(Producto producto);
+    Producto actualizarStock(Producto producto);
     
 }

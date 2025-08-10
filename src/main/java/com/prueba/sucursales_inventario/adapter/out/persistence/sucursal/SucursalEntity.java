@@ -26,9 +26,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "sucursales")
 @Data
-@Builder
+//@Builder
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 public class SucursalEntity {
 
 

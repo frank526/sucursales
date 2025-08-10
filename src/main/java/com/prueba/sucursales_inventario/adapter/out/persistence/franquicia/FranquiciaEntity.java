@@ -21,9 +21,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "franquicias")
 @Data
-@Builder
+//@Builder
 @NoArgsConstructor
-@AllArgsConstructor
+//@AllArgsConstructor
 public class FranquiciaEntity {
 
     @Id

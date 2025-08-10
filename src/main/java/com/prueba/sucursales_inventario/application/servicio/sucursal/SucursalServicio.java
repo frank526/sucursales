@@ -10,6 +10,8 @@ import com.prueba.sucursales_inventario.domain.port.out.franquicia.LoadFranquici
 import com.prueba.sucursales_inventario.domain.port.out.sucursal.LoadSucursal;
 import com.prueba.sucursales_inventario.domain.port.out.sucursal.SaveSucursal;
 
+import jakarta.persistence.PersistenceException;
+
 public class SucursalServicio implements CrearSucursalUseCase {
 
 
@@ -35,7 +37,13 @@ public class SucursalServicio implements CrearSucursalUseCase {
             throw new EntityNotFoundException("Franquicia con id " + franquiciaId + " no existe");
         }
 
-        return saveSucursal.save(franquiciaFound, sucursal);
+        try{
+            return saveSucursal.save(franquiciaFound, sucursal);
+        }catch(Exception e){
+             throw new PersistenceException("Error al guardar la sucursal "+e.getCause());
+        }
+
+        
     }
 
 
