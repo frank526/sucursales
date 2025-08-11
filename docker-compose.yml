@@ -1,0 +1,34 @@
+
+services:
+  mysql:
+    container_name: my-mysql-prueba
+    image: mysql:8.0
+    volumes:
+      - $PWD/data:/var/lib/mysql
+    environment:
+       MYSQL_ROOT_PASSWORD: 1234
+       MYSQL_DATABASE: prueba-franquiciabd
+    networks:
+       - spring-net
+    ports:
+      - "3306:3306"
+
+  sucursales-inventario:
+     build: ./sucursales-inventario
+     container_name: sucursales-inventario
+     ports:
+       - 8081:8081
+     environment:
+       - SPRING_DATASOURCE_URL=jdbc:mysql://mysql:3306/prueba-franquiciabd
+       - SPRING_DATASOURCE_USERNAME=root
+       - SPRING_DATASOURCE_PASSWORD=1234
+     networks:
+       - spring-net
+     depends_on:
+        - mysql
+
+networks:
+   spring-net:
+
+volumes:
+   mysql_data:
