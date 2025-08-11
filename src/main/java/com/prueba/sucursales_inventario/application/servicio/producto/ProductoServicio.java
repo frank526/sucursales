@@ -99,11 +99,11 @@ public class ProductoServicio implements CrearProductoUseCase, EliminarProductoU
 
     @Override
     public List<ProductoStockSucursal> obtenerStockPorSucursal(Long franquiciaId) {
-
-       List<ProductoStockSucursal> res = loadProducto.getMaxStock(franquiciaId);
-
-       return res;
-       
+        try{
+            return loadProducto.getMaxStock(franquiciaId);
+        }catch(Exception e){
+             throw new PersistenceException("Error al realizar la consulta "+e.getMessage());
+        }
 
     }
     

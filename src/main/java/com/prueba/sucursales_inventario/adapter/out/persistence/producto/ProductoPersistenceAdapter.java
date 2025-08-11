@@ -61,7 +61,7 @@ public class ProductoPersistenceAdapter implements SaveProducto, DeleteProducto,
         Optional<ProductoEntity> productoFound = productoRepository.findById(producto.getId());
 
         if (productoFound.isPresent()) {
-
+            return null;
         }
 
         ProductoEntity productoEntity = productoFound.get();
@@ -70,7 +70,6 @@ public class ProductoPersistenceAdapter implements SaveProducto, DeleteProducto,
         try {
            return productoRepository.save(productoEntity);
         } catch (Exception e) {
-            System.out.println("ERROR TO UPDATE  " + e);
             return null;
         }
     }

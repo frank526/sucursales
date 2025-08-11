@@ -71,12 +71,14 @@ public class ProductoController {
 
     }
 
-    @GetMapping
-    public List<ProductoStockSucursal> obtenerMayorStock(@RequestParam Long franquiciaId){
+    @GetMapping("/stock")
+    public ResponseEntity<?> obtenerMayorStock(@RequestParam Long franquiciaId) {
 
-       return productoServicio.obtenerStockPorSucursal(franquiciaId);
-        
-    } 
+        List<ProductoStockSucursal> prodList = productoServicio.obtenerStockPorSucursal(franquiciaId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(prodList);
+
+    }
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<String> handleNotFound(EntityNotFoundException ex) {
