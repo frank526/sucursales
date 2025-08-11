@@ -26,7 +26,7 @@ Este microservicio implementado con **Spring Boot** permite gestionar franquicia
 
 ### Clonar el repositorio
 ```bash
-git clone https://github.com/usuario/repositorio.git
+git clone https://github.com/frank526/sucursales.git
 cd repositorio
 ```
 
