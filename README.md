@@ -20,7 +20,7 @@ Este microservicio implementado con **Spring Boot** permite gestionar franquicia
 ## ⚙️ Instalación y ejecución
 
 ### Requisitos previos
-- [Java 17+](https://adoptium.net/)
+- [Java 17](https://adoptium.net/)
 - [Docker](https://www.docker.com/get-started)
 - [Docker Compose](https://docs.docker.com/compose/)
 
@@ -62,7 +62,7 @@ El microservicio estará disponible en: http://localhost:8081/api
 | **POST**   | `/franquicia/create`                               | Crear una nueva  franquicia                                           |
 | **POST**   | `/sucursal/create?franquiciaId={id}`           | Crear una sucursal asociada a una franquicia                         |
 | **POST**   | `/producto/create?sucursalId={id}`               | Crear un producto en una sucursal                                    |
-| **DELETE** | `/producto/delete?sucursalId={id}&productId={id}`  | Eliminar un producto de una sucursal                                 |
+| **DELETE** | `/producto/delete?sucursalId={id}&productId={id2}`  | Eliminar un producto de una sucursal                                 |
 | **PUT**    | `/producto/update`                    | Modificar el stock de un producto                                    |
 | **GET**    | `/producto/stock?franquiciaId={id}` | Consultar el producto con mayor stock por sucursal en una franquicia |
 
